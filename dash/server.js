@@ -208,7 +208,6 @@ app.post('/api/get-servers', async (req, res) => {
 });
 
 
-app.listen(port, () => {
-    console.log(`Servidor iniciado. Abre https://dash.deltaservice.xyz en tu navegador.`);
+app.listen(PORT, () => {
+  console.log(`✅ ¡Servidor funcionando correctamente en http://localhost:${PORT}`);
 });
-
