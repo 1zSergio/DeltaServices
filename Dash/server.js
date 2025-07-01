@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
 // --- CONFIGURACIÓN DE CLAVES Y URLS ---
 const PTERODACTYL_URL = 'https://panel.deltaservice.xyz'; // URL de tu panel
