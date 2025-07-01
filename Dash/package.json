@@ -1,7 +1,7 @@
 {
   "name": "onyxhosting-backend",
   "version": "1.0.0",
-  "description": "Servidor para el panel de OnyxHosting",
+  "description": "Dashboard de OnyxHosting",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
