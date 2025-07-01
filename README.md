@@ -91,15 +91,14 @@ Tickets de Soporte: Abre un ticket desde tu área de cliente para un seguimiento
 
 Guías y Tutoriales: Encuentra respuestas a dudas comunes en nuestra Base de Conocimientos.
 
-Correo Electrónico: Escríbenos a soporte@delta-services.com.
+Correo Electrónico: Escríbenos a contacto@deltaservice.xyz
 
-WhatsApp / Telegram: Para consultas rápidas, contáctanos en el +XX XXX XXX XXX.
 
 Síguenos en Redes Sociales 📣
 Entérate de nuestras novedades y ofertas.
 
 Telegram (Canal de Ofertas): Enlace a tu canal de Telegram - ¡Aquí publicamos los mejores descuentos!
 
-Twitter: @delta-services-twitter
+Twitter: Proximamente
 
-Instagram: @delta-services-instagram
+Instagram: Proximamente
