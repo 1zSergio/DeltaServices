@@ -1,0 +1,26 @@
+/* src/components/Footer.module.css */
+
+.footer {
+  background-color: transparent; /* Hacemos el fondo transparente */
+  padding-top: 60px;
+  margin-top: 60px;
+  border-top: 1px solid var(--border-color); /* Mantenemos el borde para la separación visual */
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+}
+/* El resto de los estilos del footer pueden permanecer como en la versión anterior,
+   ya que son limpios y funcionales y encajan bien aquí */
+.column h3, .column h4 { font-weight: 600; margin-bottom: 20px; color: var(--text-primary); }
+.logo { font-size: 1.5rem; }
+.logo span { color: var(--primary-accent); }
+.column p { color: var(--text-secondary); max-width: 250px; }
+.column ul { list-style: none; padding: 0; margin: 0; }
+.column ul li { margin-bottom: 12px; }
+.column ul a { color: var(--text-secondary); transition: color 0.2s ease; }
+.column ul a:hover { color: var(--primary-accent); }
+.bottomBar { text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.9rem; }

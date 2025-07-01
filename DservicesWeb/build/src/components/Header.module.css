@@ -1,0 +1,80 @@
+/* src/components/Header.module.css */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 1rem 0; /* Más pequeña */
+  transition: background-color 300ms ease-in-out, backdrop-filter 300ms ease-in-out;
+}
+
+.header.scrolled {
+  /* Fondo semi-transparente */
+  background-color: rgba(18, 16, 24, 0.7); 
+  
+  /* El efecto de desenfoque del fondo */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Para Safari */
+  
+  border-bottom: 1px solid var(--border-color);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary); /* <-- Forzamos el color base a blanco */
+  text-decoration: none;      /* <-- Quitamos cualquier subrayado */
+  border: none;               /* <-- Por si acaso, quitamos bordes */
+}
+
+.logo span {
+  color: var(--primary-accent); /* <-- Esto solo afectará al span (Services) */
+}
+
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* --- ESTILOS MODERNOS PARA LOS ENLACES --- */
+.nav a {
+  font-weight: 500;
+  /* 1. Color blanco por defecto */
+  color: var(--text-primary);
+  /* 2. Quitamos cualquier subrayado posible */
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  position: relative;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* 3. Efecto hover moderno: cambia a color de acento */
+.nav a:not(.contactButton):hover {
+  color: var(--primary-accent);
+  background-color: transparent; /* Nos aseguramos de que no haya fondo */
+}
+
+/* El botón de contacto se mantiene igual */
+.contactButton {
+  background: blue;
+  color: white !important; /* Forzamos el color blanco para que no cambie */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.contactButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px blue;
+}
