@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
 const app = express();
-const port = 80;
+const port = 3000;
 
 // --- CONFIGURACIÓN DE CLAVES Y URLS ---
 const PTERODACTYL_URL = 'https://panel.deltaservice.xyz'; // URL de tu panel
@@ -208,7 +208,6 @@ app.post('/api/get-servers', async (req, res) => {
 });
 
 
-app.listen(port, () => {
-    console.log(`Servidor iniciado. Abre https://dash.deltaservice.xyz en tu navegador.`);
+app.listen(PORT, () => {
+  console.log(`✅ ¡Servidor funcionando correctamente en http://localhost:${PORT}`);
 });
-
