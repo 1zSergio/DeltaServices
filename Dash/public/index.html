@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnyxHosting - Dashboard</title>
+    <link rel="icon" type="image/png" href="https://cdn.discordapp.com/attachments/1371807818734239837/1382010323325943909/image.png?ex=6863f6e9&is=6862a569&hm=9ecdb60dae7ccd4063b538323459d0965810646c182937b0c43b3f3d98ee1763&"/>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+    <script>
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = '/login.html';
+        }
+    </script>
+    <script src="script.jsx"></script>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><span class="logo-onyx">Onyx</span><span class="logo-hosting">Hosting</span></h2>
+                <a href="#" class="cart-icon-wrapper nav-trigger" data-target="facturacion-section"><i class="fa-solid fa-cart-shopping"></i><span id="cart-count" class="cart-badge">0</span></a>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" class="nav-link active" data-target="dashboard-section"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+                    <li><a href="#" class="nav-link" data-target="accesos-section"><i class="fa-solid fa-house"></i> Accesos</a></li>
+                    <li><a href="#" class="nav-link" data-target="tienda-section"><i class="fa-solid fa-store"></i> Tienda</a></li>
+                    <li><a href="#" class="nav-link" data-target="facturacion-section"><i class="fa-solid fa-file-invoice-dollar"></i> Facturación</a></li>
+                    <li><a href="#" class="nav-link" data-target="account-section"><i class="fa-solid fa-user-pen"></i> Mi Cuenta</a></li>
+                    <li><a href="#" class="nav-link" data-target="soporte-section"><i class="fa-solid fa-headset"></i> Soporte</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="https://admin.deltaservice.xyz/" class="admin-button"><i class="fa-solid fa-user-shield"></i> Admin</a>
+                <div class="user-profile">
+                    <div class="user-info"><i class="fa-solid fa-user-circle fa-2x"></i><span id="username-display"></span>
+                        </div>
+                    <a href="#" class="logout-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
+                        </div>
+            </aside>
+
+        <main class="main-content">
+            
+            <section id="dashboard-section" class="content-section">
+                <header class="main-header"><h1>Dashboard</h1><p>Bienvenido de nuevo, <b><span id="welcome-username"></b></span>. Aquí tienes un resumen de tu cuenta.</p></header>                <div class="stats-container">
+                    <div class="card stat-card"><div class="stat-icon"><i class="fa-solid fa-ticket"></i></div><div class="stat-info"><span>Tickets Abiertos</span><span class="stat-value">0</span></div></div>
+                    <div class="card stat-card"><div class="stat-icon"><i class="fa-solid fa-file-invoice"></i></div><div class="stat-info"><span>Facturas Pendientes</span><span class="stat-value">0</span></div></div>
+                </div>
+                <div class="dashboard-header"><h2 class="section-title">Tus Servidores</h2><a href="#" class="card-button primary nav-trigger" data-target="tienda-section"><i class="fa-solid fa-plus"></i> Crear Servidor</a></div>
+                <div class="server-list-container" id="server-list">
+                    <p>Cargando servidores...</p> 
+                </div>
+            </section>
+            
+            <section id="accesos-section" class="content-section hidden">
+                <header class="main-header"><h1>Accesos Rápidos</h1><p>Navega a las diferentes secciones de tu panel.</p></header>
+                <div class="access-cards-container">
+                    <div class="card"><div class="card-icon"><i class="fa-solid fa-store"></i></div><h3>Ir a la Tienda</h3><p>Explora nuestros planes o crea el tuyo para empezar un nuevo proyecto.</p><a href="#" class="card-button nav-trigger" data-target="tienda-section">Ver Planes</a></div>
+                    <div class="card"><div class="card-icon"><i class="fa-solid fa-desktop"></i></div><h3>Dashboard</h3><p>Consulta el estado y los recursos de todos tus servidores activos.</p><a href="#" class="card-button nav-trigger" data-target="dashboard-section">Ver Servidores</a></div>
+                    <div class="card"><div class="card-icon"><i class="fa-solid fa-headset"></i></div><h3>Soporte Técnico</h3><p>Obtén ayuda de nuestro equipo o de la comunidad.</p><a href="#" class="card-button nav-trigger" data-target="soporte-section">Ver Opciones</a></div>
+                    <div class="card"><div class="card-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div><h3>Facturación</h3><p>Revisa tu cesta, historial de pagos y gestiona tus facturas.</p><a href="#" class="card-button nav-trigger" data-target="facturacion-section">Ir a Facturación</a></div>
+                </div>
+            </section>
+
+            <section id="tienda-section" class="content-section hidden">
+                <header class="main-header"><h1>Tienda de Planes</h1><p>Elige uno de nuestros planes optimizados o crea el tuyo a medida.</p></header>
+                <div class="plans-container">
+                    <div class="plan-card"><h3>Plan Bronce</h3><div class="price">5.99€<span class="period">/mes</span></div><ul><li><i class="fa-solid fa-check"></i> 2 Core CPU</li><li><i class="fa-solid fa-check"></i> 4 GB RAM</li><li><i class="fa-solid fa-check"></i> 40 GB SSD</li></ul><button class="card-button add-to-cart-btn" data-id="plan-basico" data-name="Plan Básico" data-price="5.99"><i class="fa-solid fa-cart-plus"></i><span>Contratar</span></button></div>
+                    <div class="plan-card"><h3>Plan Plata</h3><div class="price">9.99€<span class="period">/mes</span></div><ul><li><i class="fa-solid fa-check"></i> 4 Core CPU</li><li><i class="fa-solid fa-check"></i> 6 GB RAM</li><li><i class="fa-solid fa-check"></i> 80 GB SSD</li></ul><button class="card-button add-to-cart-btn" data-id="plan-pro" data-name="Plan Profesional" data-price="15.99"><i class="fa-solid fa-cart-plus"></i><span>Contratar</span></button></div>
+                    <div class="plan-card"><h3>Plan Oro</h3><div class="price">17.99€<span class="period">/mes</span></div><ul><li><i class="fa-solid fa-check"></i> 8 Core CPU</li><li><i class="fa-solid fa-check"></i> 10 GB RAM</li><li><i class="fa-solid fa-check"></i> 140 GB SSD</li></ul><button class="card-button add-to-cart-btn" data-id="plan-empresa" data-name="Plan Empresa" data-price="29.99"><i class="fa-solid fa-cart-plus"></i><span>Contratar</span></button></div>
+                </div>
+                <h2 id="custom-plan-title" class="section-title">Crea tu Plan Personalizado</h2>
+                <div class="custom-plan-creator">
+                    <div class="sliders"><div class="slider-group"><div class="slider-label-container"><div class="label-with-icon"><i class="fa-solid fa-microchip"></i><label for="cpu-slider">CPU (Cores)</label></div><span id="cpu-value">1 Core</span></div><input type="range" id="cpu-slider" min="1" max="8" value="1" class="slider"></div><div class="slider-group"><div class="slider-label-container"><div class="label-with-icon"><i class="fa-solid fa-memory"></i><label for="ram-slider">RAM (GB)</label></div><span id="ram-value">2 GB</span></div><input type="range" id="ram-slider" min="1" max="32" value="2" class="slider"></div><div class="slider-group"><div class="slider-label-container"><div class="label-with-icon"><i class="fa-solid fa-hard-drive"></i><label for="storage-slider">Almacenamiento SSD (GB)</label></div><span id="storage-value">20 GB</span></div><input type="range" id="storage-slider" min="20" max="500" step="10" value="20" class="slider"></div></div>
+                    <div class="custom-plan-summary"><h3>Tu Servidor a Medida</h3><p>El precio se ajusta a los recursos que necesitas.</p><div class="price-summary"><span>Precio Total:</span><span id="custom-price" class="price">7.20€</span><span class="period">/mes</span></div><button id="add-custom-plan-btn" class="card-button add-to-cart-btn"><i class="fa-solid fa-cart-plus"></i><span>Añadir a la Cesta</span></button></div>
+                </div>
+            </section>
+
+            <section id="facturacion-section" class="content-section hidden">
+                <header class="main-header"><h1>Facturación y Cesta</h1><p>Revisa tu pedido y procede al pago.</p></header>
+                <div class="cart-container"><div id="cart-items-container"></div><div id="cart-summary" class="hidden"><div class="summary-line"><span>Subtotal</span><span id="cart-subtotal">0.00€</span></div><div class="summary-line"><span>IVA (21%)</span><span id="cart-iva">0.00€</span></div><div class="summary-line total"><span>Total</span><span id="cart-total">0.00€</span></div><button class="card-button checkout-btn">Proceder al Pago</button></div></div>
+            </section>
+                <section id="account-section" class="content-section hidden">
+                    <header class="main-header"><h1>Mi Cuenta</h1><p>Gestiona los detalles y la seguridad de tu cuenta.</p></header>
+                    
+                    <!-- CONTENEDOR SIMPLE PARA LA CONTRASEÑA -->
+                    <div id="password-info-container">
+                        <h2 class="section-title">Contraseña de Pterodactyl</h2>
+                        <p id="password-info-text">Para saber tu contraseña revisa tu correo electronico, deberias haber recibido un correo al registrarte.</p>
+                    </div>
+                </section>
+            <section id="soporte-section" class="content-section hidden">
+                <header class="main-header"><h1>Soporte Técnico</h1><p>¿Necesitas ayuda? Únete a nuestra comunidad para recibir asistencia.</p></header>
+                <div class="support-cards-container">
+                    <div class="card support-card-large">
+                        <div class="card-icon large-icon"><i class="fa-brands fa-discord"></i></div>
+                        <h3>Únete a Discord</h3>
+                        <p>Para ayuda de la comunidad, dudas rápidas o simplemente charlar con otros usuarios de OnyxHosting.</p>
+                        <a href="https://discord.gg/27zHCptbjf" class="card-button discord-btn">Ir a Discord</a>
+                    </div>
+                </div>
+            </section>
+            
+            <footer class="main-footer">
+                <div class="footer-section"><h4> <a href="https://hosting.deltaservice.xyz/">ONYXHOSTING</a></h4><p>Potencia y fiabilidad para tus proyectos online.</p></div>
+                <div class="footer-section"><h4>NAVEGACIÓN</h4><ul><li><a href="#">Tienda</a></li><li><a href="#">Dashboard</a></li><li><a href="#">Facturación</a></li></ul></div>
+                <div class="footer-section"><h4>SOPORTE</h4><ul><li><a href="#">Comunidad Discord</a></li><li><a href="#">Base de Conocimiento</a></li><li><a href="#">Página de Estado</a></li></ul></div>
+                <div class="footer-section"><h4>LEGAL</h4><ul><li><a href="#">Términos de Servicio</a></li><li><a href="#">Política de Privacidad</a></li></ul></div>
+            </footer>
+            <div class="copyright"><p>&copy; 2025 Onyx Hosting. Todos los derechos reservados.</p></div>
+        </main>
+    </div>
+</body>
+</html>
