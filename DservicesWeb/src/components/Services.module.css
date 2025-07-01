@@ -1,0 +1,101 @@
+/* src/components/Services.module.css */
+.services {
+  padding: 100px 20px;
+}
+.grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(280px, auto);
+  gap: 20px;
+}
+
+.card {
+  /* Fondo semi-transparente para el cristal */
+  background: rgba(26, 23, 33, 0.6); /* Usamos el color de fondo de la tarjeta con transparencia */
+  
+  /* Efecto de desenfoque */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Para Safari */
+
+  /* El resto de estilos se mantienen */
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-accent);
+}
+
+.content {
+  /* Contenedor del contenido superior */
+}
+
+.cardLarge { grid-column: span 1; grid-row: span 2; }
+.cardWide { grid-column: span 2; }
+
+.icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--primary-accent);
+}
+
+.card h3 {
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.card p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* --- ESTILOS DEL BOTÓN --- */
+.button {
+  /* Propiedades de Flexbox para el centrado vertical */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* --- AJUSTE MANUAL CORREGIDO --- */
+  /* padding: top right bottom left */
+  /* Más padding a la derecha para empujar el texto a la izquierda */
+  
+  width: 100%;
+  margin-top: 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: rgba(255, 255, 255, 0.03);
+  padding:  5px; 
+  border: 1px solid var(--border-color);
+  text-decoration: none;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+.card:hover .button {
+  background-color: var(--primary-accent);
+  color: white;
+}
+
+
+/* --- Media Queries --- */
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .cardWide { grid-column: span 2; }
+}
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr; }
+  .cardLarge, .cardWide { grid-column: span 1; grid-row: span 1; }
+}
