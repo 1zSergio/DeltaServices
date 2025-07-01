@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnyxHosting - Login</title>
+    <link rel="icon" type="image/png" href="hhttps://cdn.discordapp.com/attachments/1371807818734239837/1382010323325943909/image.png?ex=6863f6e9&is=6862a569&hm=9ecdb60dae7ccd4063b538323459d0965810646c182937b0c43b3f3d98ee1763&"/>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="auth-container">
+        <div class="card auth-card">
+            <div class="auth-header">
+                <h2><span class="logo-onyx">Onyx</span><span class="logo-hosting">Hosting</span></h2>
+                <p>Inicia sesión para acceder al dashboard de OnyxHosting.</p>
+            </div>
+            <a href="#" id="discord-login-btn" class="btn btn-primary discord-btn">
+                <i class="fa-brands fa-discord"></i>
+                <span>Iniciar Sesión con Discord</span>
+            </a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                window.location.href = '/index.html';
+                return;
+            }
+            document.getElementById('discord-login-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                const CLIENT_ID = '1386287716706160730'; 
+                const REDIRECT_URI = 'http://dash.deltaservice.xyz/callback.html';
+                const scope = 'identify email';
+                const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent(scope)}`;
+                window.location.href = authUrl;
+            });
+        });
+    </script>
+</body>
+</html>

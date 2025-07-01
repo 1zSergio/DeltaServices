@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Redirigiendo...</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="auth-container"><p class="auth-feedback">Verificando...</p></div>
+    <script>
+        window.onload = async function() {
+            const feedbackEl = document.querySelector('.auth-feedback');
+            const code = new URLSearchParams(window.location.search).get('code');
+            if (code) {
+                try {
+                    const response = await fetch('/api/discord-auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code: code }),
+                    });
+                    if (!response.ok) throw new Error((await response.json()).error || 'Fallo del servidor');
+                    
+                    const sessionData = await response.json();
+
+                    if (sessionData && sessionData.isLoggedIn) {
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('username', sessionData.username);
+                        localStorage.setItem('pteroUserId', sessionData.pteroUserId);
+                        
+                        // --- NUEVO: Guardamos la contraseña inicial si existe ---
+                        if (sessionData.initialPassword) {
+                            localStorage.setItem('initialPassword', sessionData.initialPassword);
+                        }
+                        
+                        window.location.href = '/index.html';
+                    } else { throw new Error('Datos de sesión inválidos.'); }
+                } catch (error) {
+                    feedbackEl.textContent = `Error: ${error.message}`;
+                    setTimeout(() => { window.location.href = '/login.html'; }, 4000);
+                }
+            }
+        };
+    </script>
+</body>
+</html>
