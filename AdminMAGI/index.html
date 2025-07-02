@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Monitoreo - MAGI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --color-background: #101012;
+            --color-panel: #1a1a1e;
+            --color-border: #2c2c31;
+            --color-text-primary: #f0f0f5;
+            --color-text-secondary: #8a8a93;
+            --color-accent: #ff6600;
+            --color-accent-hover: #ff8533;
+            --color-error: #ef4444;
+            --font-primary: 'Inter', sans-serif;
+            --panel-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--color-background);
+            color: var(--color-text-primary);
+            overflow-y: auto;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 150vw;
+            height: 150vh;
+            background: radial-gradient(circle at center, rgba(255, 102, 0, 0.15) 0%, transparent 50%);
+            transform: translate(-50%, -50%);
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: -1;
+            animation: fadeIn 3s ease-out;
+        }
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-background);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            transition: opacity 0.5s ease;
+        }
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 2.5rem;
+            background-color: var(--color-panel);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            box-shadow: var(--panel-shadow);
+            animation: fadeIn 0.5s ease-out;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        .input-field {
+            width: 93%;
+            padding: 0.75rem 1rem;
+            background-color: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            color: var(--color-text-primary);
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.3);
+        }
+        .login-button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--color-accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .login-button:hover {
+            background-color: var(--color-accent-hover);
+        }
+        .login-error {
+            color: var(--color-error);
+            text-align: center;
+            margin-top: 1rem;
+            height: 1.25rem;
+            font-weight: 500;
+        }
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.5rem;
+            display: none;
+        }
+        .page-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .page-header h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+        }
+        .page-header nav {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .nav-link {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover {
+            background-color: var(--color-panel);
+            color: var(--color-text-primary);
+        }
+        .nav-link.active {
+            background-color: var(--color-accent);
+            color: #fff;
+        }
+        .logout-btn {
+            background-color: var(--color-panel);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-secondary);
+        }
+        .logout-btn:hover {
+            background-color: var(--color-error);
+            color: #fff;
+            border-color: var(--color-error);
+        }
+        .panel {
+            background-color: var(--color-panel);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--panel-shadow);
+            animation: fadeIn 0.5s ease-out forwards;
+            margin-bottom: 2rem;
+        }
+        .panel-header {
+            padding: 1rem 1.5rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .panel-content { padding: 1.5rem; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .summary-card {
+            background-color: var(--color-panel); border: 1px solid var(--color-border); border-radius: 12px;
+            padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .summary-card .icon { width: 32px; height: 32px; flex-shrink: 0; color: var(--color-accent); }
+        .summary-card-info h3 { font-size: 1.25rem; font-weight: 700; color: var(--color-text-primary); }
+        .summary-card-info p { color: var(--color-text-secondary); }
+        .status-indicator {
+            width: 12px; height: 12px; border-radius: 50%; margin-left: auto;
+            position: relative; overflow: hidden;
+        }
+        .status-indicator::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+            animation: shimmer 2.5s infinite linear;
+        }
+        .status-online { background-color: #22c55e; box-shadow: 0 0 10px #22c55e; }
+        .status-offline { background-color: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        .resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .resource-bar-container { display: flex; flex-direction: column; gap: 0.5rem; }
+        .resource-bar-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;}
+        .resource-bar-label { font-weight: 600; font-size: 1.125rem; color: var(--color-text-primary); }
+        .resource-bar-values { display: flex; align-items: baseline; gap: 0.75rem; }
+        .resource-bar-percent { font-size: 1.125rem; font-weight: 700; color: var(--color-accent); }
+        .resource-bar-details { font-size: 0.875rem; color: var(--color-text-secondary); }
+        .progress-bar-bg { width: 100%; background-color: #333; border-radius: 9999px; height: 10px; overflow: hidden; }
+        .progress-bar-fg {
+            background: var(--color-accent);
+            height: 100%; border-radius: 9999px;
+            transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1); width: 0%;
+        }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+        .info-box {
+            background-color: var(--color-background);
+            padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border);
+        }
+        .info-box-label {
+            font-size: 0.875rem; color: var(--color-text-secondary); margin-bottom: 0.25rem;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .info-box-value { font-size: 1.1rem; font-weight: 600; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .action-button {
+            display: inline-flex; align-items: center; gap: 0.5rem; background-color: var(--color-accent); color: #fff;
+            font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none;
+            transition: all 0.2s; border: none; cursor: pointer;
+        }
+        .action-button:hover { background-color: var(--color-accent-hover); transform: translateY(-2px); }
+        .chart-container { height: 300px; position: relative; }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>Admin Panel MAGI</h1>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <input type="text" id="username" class="input-field" placeholder="Usuario" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" class="input-field" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="login-button">Entrar</button>
+                <p id="login-error" class="login-error"></p>
+            </form>
+        </div>
+    </div>
+
+    <div id="page-container" class="page-container">
+        <header class="page-header">
+            <h1 id="main-header"></h1>
+            <nav id="nav-links-container" class="nav-links"></nav>
+        </header>
+
+        <main id="main-content-area">
+            </main>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN ---
+        const CREDENTIALS = {
+            username: "delta",
+            password: "Delta151414#"
+        };
+        const REFRESH_INTERVAL = 2000;
+        const CHART_MAX_POINTS = 30;
+        const SSH_WEB_URL = "https://ssh.deltaservice.xyz";
+
+        // --- NUEVO: Definición centralizada de los nodos a monitorear ---
+        const NODES = [
+            { name: "Casper",   url: "https://json-c.deltaservice.xyz", type: "Physical", btopUrl: "https://btop-c.deltaservice.xyz",},
+            { name: "Melchior", url: "https://json-m.deltaservice.xyz", type: "Physical", btopUrl: "https://btop-m.deltaservice.xyz",},
+            { name: "Balthasar",url: "https://json-b.deltaservice.xyz", type: "Physical", btopUrl: "https://btop-b.deltaservice.xyz",},
+        ];
+
+        // --- ICONOS SVG ---
+        const ICONS = {
+            server: `<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 13H4a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm-1-3h-2v1h2v-1zM20 6H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm-1-2h-2v1h2V4zM20 20H4a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1zm-1-2h-2v1h2v-1z"></path></svg>`
+        };
+
+        // --- REFERENCIAS A ELEMENTOS DEL DOM ---
+        const loginOverlay = document.getElementById('login-overlay');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const pageContainer = document.getElementById('page-container');
+        const navLinksContainer = document.getElementById('nav-links-container');
+        const mainContentArea = document.getElementById('main-content-area');
+        const mainHeader = document.getElementById('main-header');
+
+        // --- ESTADO DE LA APLICACIÓN ---
+        let allMachines = [];
+        let selectedMachine = "MAGI";
+        let masterIntervalId = null;
+        let cpuChart = null;
+        let chartData = { labels: [], values: [] };
+
+        /** Dibuja el panel de resumen de MAGI */
+        function drawMagiSummary() {
+            mainHeader.innerHTML = 'Resumen de MAGI';
+            let summaryHTML = `<div class="summary-grid">`;
+            allMachines.forEach(machine => {
+                const isOnline = machine.status === 'online';
+                summaryHTML += `
+                    <div class="summary-card" id="summary-${machine.name}">
+                        ${ICONS.server}
+                        <div class="summary-card-info">
+                            <h3>${machine.name}</h3>
+                            <p>${machine.type}</p>
+                        </div>
+                        <div class="status-indicator ${isOnline ? 'status-online' : 'status-offline'}" title="${isOnline ? 'Online' : 'Offline'}"></div>
+                    </div>
+                `;
+            });
+            summaryHTML += `</div>`;
+            mainContentArea.innerHTML = summaryHTML;
+        }
+        
+        /** Actualiza el panel de resumen de MAGI sin redibujar */
+        function updateMagiSummary() {
+            allMachines.forEach(machine => {
+                const card = document.getElementById(`summary-${machine.name}`);
+                if (card) {
+                    const indicator = card.querySelector('.status-indicator');
+                    const isOnline = machine.status === 'online';
+                    if (indicator.classList.contains('status-online') !== isOnline) {
+                        indicator.className = `status-indicator ${isOnline ? 'status-online' : 'status-offline'}`;
+                        indicator.title = isOnline ? 'Online' : 'Offline';
+                    }
+                }
+            });
+        }
+
+        /** Dibuja el panel de una máquina offline */
+        function drawOfflineView(machineName) {
+            mainHeader.innerHTML = `Resumen de ${machineName}`;
+            mainContentArea.innerHTML = `<div class="panel"><div class="panel-header">Estado</div><div class="panel-content"><p style="font-size: 1.1rem;">La máquina <strong style="color:var(--color-accent);">${machineName}</strong> está actualmente offline.</p></div></div>`;
+        }
+
+        /** Dibuja la ESTRUCTURA del panel de estadísticas. */
+        function drawStatsView(node) {
+             const machineConfig = NODES.find(n => n.name === node.name);
+            const btopUrl = machineConfig ? machineConfig.btopUrl : '';
+            mainHeader.innerHTML = `Resumen de <span style="color: var(--color-accent);">${node.name}</span>`;
+            mainContentArea.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                    <div class="panel">
+                        <div class="panel-header">Uso de CPU (Tiempo Real)</div>
+                        <div class="panel-content"><div class="chart-container"><canvas id="cpuChart"></canvas></div></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">Recursos Principales</div>
+                        <div class="panel-content resource-grid">
+                            <div class="resource-bar-container">
+                                <div class="resource-bar-header"><span class="resource-bar-label">CPU</span><div class="resource-bar-values"><span id="percent-cpu" class="resource-bar-percent"></span></div></div>
+                                <div class="progress-bar-bg"><div id="bar-cpu" class="progress-bar-fg"></div></div>
+                            </div>
+                            <div class="resource-bar-container">
+                                <div class="resource-bar-header"><span class="resource-bar-label">Memoria</span><div class="resource-bar-values"><span id="percent-memoria" class="resource-bar-percent"></span><span id="details-memoria" class="resource-bar-details"></span></div></div>
+                                <div class="progress-bar-bg"><div id="bar-memoria" class="progress-bar-fg"></div></div>
+                            </div>
+                            <div class="resource-bar-container">
+                                <div class="resource-bar-header"><span class="resource-bar-label">Disco</span><div class="resource-bar-values"><span id="percent-disco" class="resource-bar-percent"></span><span id="details-disco" class="resource-bar-details"></span></div></div>
+                                <div class="progress-bar-bg"><div id="bar-disco" class="progress-bar-fg"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">Información del Sistema</div>
+                        <div class="panel-content info-grid" id="stats-info"></div>
+                    </div>
+                                      <div class="panel">
+                        <div class="panel-header">btop (Terminal en Vivo)</div>
+                        <div class="panel-content" style="padding: 0; height: 600px; background-color: #000;">
+                            <iframe 
+                                src="${btopUrl}" 
+                                style="width: 113%; height: 101%; border: none;">
+                            </iframe>
+                            </div>
+                    <div class="panel">
+                        <div class="panel-header">Acciones</div>
+                        <div class="panel-content">
+                            <a href="${SSH_WEB_URL}" target="_blank" class="action-button" title="Abrir terminal SSH en una nueva pestaña">
+                                <svg class="icon" style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+                                <span>Conectar por SSH</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>`;
+            initializeCpuChart();
+            updateStats(node);
+        }
+
+        /** Inicializa el gráfico de CPU */
+        function initializeCpuChart() {
+            if (cpuChart) cpuChart.destroy();
+            const ctx = document.getElementById('cpuChart').getContext('2d');
+            
+            cpuChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        data: chartData.values,
+                        borderColor: '#ff6601',
+                        backgroundColor: '#863f10',
+                        borderWidth: 2, pointRadius: 0, tension: 0.4, fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'var(--color-text-secondary)' } },
+                        x: { grid: { display: false }, ticks: { display: false } }
+                    },
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                }
+            });
+        }
+
+        /** Solo actualiza los valores, sin redibujar todo el panel */
+        function updateStats(node) {
+            if (cpuChart) {
+                const now = new Date();
+                chartData.labels.push(`${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`);
+                chartData.values.push(node.cpu_usage_percent);
+                if (chartData.labels.length > CHART_MAX_POINTS) {
+                    chartData.labels.shift();
+                    chartData.values.shift();
+                }
+                cpuChart.update('none');
+            }
+            
+            document.getElementById('bar-cpu').style.width = `${node.cpu_usage_percent}%`;
+            document.getElementById('percent-cpu').textContent = `${parseFloat(node.cpu_usage_percent).toFixed(1)}%`;
+            
+            document.getElementById('bar-memoria').style.width = `${node.memory.percent}%`;
+            document.getElementById('percent-memoria').textContent = `${parseFloat(node.memory.percent).toFixed(1)}%`;
+            document.getElementById('details-memoria').textContent = `(${node.memory.used_gb.toFixed(1)}/${node.memory.total_gb.toFixed(1)} GB)`;
+
+            document.getElementById('bar-disco').style.width = `${node.disk.percent}%`;
+            document.getElementById('percent-disco').textContent = `${parseFloat(node.disk.percent).toFixed(1)}%`;
+            document.getElementById('details-disco').textContent = `(${node.disk.used_gb}/${node.disk.total_gb} GB)`;
+
+            const statsInfo = document.getElementById('stats-info');
+            if (statsInfo) {
+                statsInfo.innerHTML = `
+                    <div class="info-box"><div class="info-box-label">OS</div><div class="info-box-value">${node.os}</div></div>
+                    <div class="info-box"><div class="info-box-label">Host</div><div class="info-box-value">${node.host}</div></div>
+                    <div class="info-box"><div class="info-box-label">Kernel</div><div class="info-box-value">${node.kernel}</div></div>
+                    <div class="info-box"><div class="info-box-label">CPU</div><div class="info-box-value" title="${node.cpu_model}">${node.cpu_model}</div></div>
+                    <div class="info-box"><div class="info-box-label">Tiempo de Actividad</div><div class="info-box-value">${node.uptime.replace('up ', '')}</div></div>
+                    <div class="info-box"><div class="info-box-label">Carga del Sistema</div><div class="info-box-value">${node.load_average}</div></div>
+                    <div class="info-box"><div class="info-box-label">Procesos</div><div class="info-box-value">${node.processes}</div></div>
+                    <div class="info-box"><div class="info-box-label">Dirección IP</div><div class="info-box-value">${node.ip_address}</div></div>`;
+            }
+        }
+        
+        /** Construye los enlaces de navegación superior */
+        function buildTopNav() {
+            const navItems = [{ name: "MAGI" }, ...allMachines];
+            let navHTML = '';
+            navItems.forEach(item => {
+                navHTML += `<a href="#" class="nav-link" data-machine="${item.name}">${item.name}</a>`;
+            });
+            navHTML += `<a href="#" id="logout-btn" class="nav-link logout-btn">Cerrar Sesión</a>`;
+            navLinksContainer.innerHTML = navHTML;
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.id === 'logout-btn') {
+                    link.addEventListener('click', handleLogout);
+                } else {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        handleMachineClick(e.currentTarget.dataset.machine);
+                    });
+                }
+            });
+            updateActiveNavLink();
+        }
+
+        /** Actualiza el enlace activo en la barra de navegación */
+        function updateActiveNavLink() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.toggle('active', link.dataset.machine === selectedMachine);
+            });
+        }
+
+        /** Maneja los clics en los enlaces de navegación */
+        function handleMachineClick(machineName) {
+            if (selectedMachine === machineName) return;
+            selectedMachine = machineName;
+            
+            clearInterval(masterIntervalId);
+            masterIntervalId = null;
+
+            renderCurrentView(true);
+        }
+
+        /** Renderiza la vista principal según la selección */
+        function renderCurrentView(isUserClick = false) {
+            const machineData = allMachines.find(m => m.name === selectedMachine);
+
+            if (isUserClick) {
+                if (cpuChart) {
+                    cpuChart.destroy();
+                    cpuChart = null;
+                }
+                chartData = { labels: [], values: [] };
+
+                if (selectedMachine === "MAGI") {
+                    drawMagiSummary();
+                } else if (machineData && machineData.status === 'online') {
+                    drawStatsView(machineData.details);
+                } else if (machineData) {
+                    drawOfflineView(selectedMachine);
+                }
+            } else {
+                if (selectedMachine === "MAGI") {
+                    updateMagiSummary();
+                } else if (machineData && machineData.status === 'online') {
+                    // Si la vista de la máquina offline está activa y vuelve a estar online, redibujar
+                    if (!document.getElementById('cpuChart')) {
+                         drawStatsView(machineData.details);
+                    } else {
+                        updateStats(machineData.details);
+                    }
+                } else if (machineData && machineData.status === 'offline') {
+                    // Si estaba online y ahora está offline, redibujar
+                    if (document.getElementById('cpuChart')) {
+                        drawOfflineView(machineData.name);
+                    }
+                }
+            }
+            
+            updateActiveNavLink();
+            mainHeader.innerHTML = selectedMachine === 'MAGI' ? 'Resumen de MAGI' : `Resumen de <span style="color: var(--color-accent);">${selectedMachine}</span>`;
+            
+            if (!masterIntervalId) {
+                masterIntervalId = setInterval(fetchDataAndRender, REFRESH_INTERVAL);
+            }
+        }
+
+        /** Obtiene los datos del agente y actualiza la vista */
+        async function fetchDataAndRender() {
+            try {
+                const fetchPromises = NODES.map(node => 
+                    fetch(`${node.url}?t=${new Date().getTime()}`, { mode: 'cors', cache: 'no-cache' })
+                );
+
+                const results = await Promise.allSettled(fetchPromises);
+                
+                const firstLoad = allMachines.length === 0;
+                let newAllMachines = [];
+
+                for (let i = 0; i < results.length; i++) {
+                    const result = results[i];
+                    const nodeInfo = NODES[i];
+
+                    if (result.status === 'fulfilled' && result.value.ok) {
+                        const data = await result.value.json();
+                        // Asignamos el nombre al objeto de detalles para consistencia
+                        data.name = nodeInfo.name; 
+                        newAllMachines.push({
+                            name: nodeInfo.name,
+                            status: 'online',
+                            type: nodeInfo.type,
+                            details: data
+                        });
+                    } else {
+                        if (result.status === 'rejected') {
+                            console.error(`Error de red al contactar a ${nodeInfo.name}:`, result.reason.message);
+                        } else {
+                             console.error(`Error de servidor en ${nodeInfo.name}:`, result.value.statusText);
+                        }
+                        newAllMachines.push({ name: nodeInfo.name, status: 'offline', type: nodeInfo.type, details: null });
+                    }
+                }
+
+                allMachines = newAllMachines.sort((a, b) => a.name.localeCompare(b.name));
+                
+                if (firstLoad) {
+                    buildTopNav();
+                    renderCurrentView(true);
+                } else {
+                    renderCurrentView(false);
+                }
+
+            } catch (error) {
+                console.error("Error crítico en fetchDataAndRender:", error);
+                mainContentArea.innerHTML = `<div class="panel"><div class="panel-header">Error de Conexión</div><div class="panel-content"><p>${error.message}</p></div></div>`;
+                clearInterval(masterIntervalId);
+            }
+        }
+        
+        /** Muestra el panel principal y oculta el login */
+        function showDashboard() {
+            loginOverlay.style.opacity = '0';
+            setTimeout(() => {
+                loginOverlay.style.display = 'none';
+                pageContainer.style.display = 'block';
+                fetchDataAndRender();
+            }, 500);
+        }
+
+        /** Maneja el intento de login */
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === CREDENTIALS.username && password === CREDENTIALS.password) {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                showDashboard();
+            } else {
+                loginError.textContent = 'Credenciales incorrectas.';
+            }
+        }
+
+        /** Maneja el logout */
+        function handleLogout(event) {
+            event.preventDefault();
+            sessionStorage.removeItem('isLoggedIn');
+            location.reload();
+        }
+
+        // --- INICIO DE LA APLICACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                showDashboard();
+            } else {
+                loginForm.addEventListener('submit', handleLogin);
+            }
+        });
+    </script>
+</body>
+</html>
